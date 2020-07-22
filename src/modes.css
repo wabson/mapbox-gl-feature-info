@@ -1,0 +1,34 @@
+.mapboxgl-draw-named-line--name-container {
+    position: absolute;
+    top: 10px;
+    right: 45px;
+    background-color: rgb(255, 255, 255);
+    font-size: 11px;
+    line-height: 18px;
+    margin: 0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+}
+.mapboxgl-draw-named-line--name-container {
+    font: 12px/20px Helvetica Neue,Arial,Helvetica,sans-serif;
+}
+.mapboxgl-draw-named-line--name-container input {
+    width: 100px;
+}
+.mapboxgl-draw-named-line--name-container button, .mapboxgl-draw-named-line--name-container input {
+    font: 12px/20px Helvetica Neue,Arial,Helvetica,sans-serif;
+    margin-left: 5px;
+    background-color: #fff;
+    border: 1px solid #999;
+    border-radius: 3px;
+    color: #333;
+    padding: 2px 5px;
+}
+.mapboxgl-draw-named-line--name-container button {
+    font-weight: bold;
+}
+.mapboxgl-draw-named-line--name-container button:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}

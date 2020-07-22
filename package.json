@@ -1,0 +1,39 @@
+{
+  "name": "mapbox-gl-draw-line-distance-mode",
+  "version": "0.0.1",
+  "description": "mapbox-gl-draw custom mode to show distance of a drawn line, extends draw_line_string mode",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "eslint src demo && webpack --watch",
+    "build": "eslint src demo && webpack",
+    "start": "eslint src demo && webpack-dev-server --open"
+  },
+  "author": "Will Abson",
+  "license": "ISC",
+  "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.1.2",
+    "@turf/length": "^6.0.2",
+    "mapbox-gl": "^1.11.1"
+  },
+  "devDependencies": {
+    "@types/mapbox-gl": "^1.11.1",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.6.0",
+    "eslint": "^7.4.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "file-loader": "^6.0.0",
+    "html-loader": "^1.1.0",
+    "html-webpack-plugin": "^4.3.0",
+    "html-webpack-template": "^6.2.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  }
+}

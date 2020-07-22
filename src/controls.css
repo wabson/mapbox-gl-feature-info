@@ -1,0 +1,15 @@
+.mapbox-ctrl-feature-info {
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    background-color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 18px;
+    display: block;
+    margin: 0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+}
+.mapbox-ctrl-feature-info:empty {
+    display: none;
+}
