@@ -64,8 +64,6 @@ class BaseInfoControl {
         this.clearFeatures();
         if (this.isSupportedFeatures(e.features)) {
             this.setFeatures(e.features);
-            var featureState = this._map.getFeatureState({ id: e.features[0].id, source: DrawConstants.sources.HOT });
-            console.log(featureState);
         }
     }
 
