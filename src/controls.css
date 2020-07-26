@@ -13,11 +13,11 @@
 .mapbox-ctrl-feature-info:empty {
     display: none;
 }
-.mapbox-ctrl-feature-info .edit-ctrl {
+.mapbox-ctrl-feature-info .edit-ctrl .edit-tools {
     display: flex;
     flex-direction: column-reverse;
 }
-.mapbox-ctrl-feature-info .edit-ctrl > .edit-icon {
+.mapbox-ctrl-feature-info .edit-ctrl .edit-icon {
     display: inline-block;
     width: 12px;
     height: 12px;

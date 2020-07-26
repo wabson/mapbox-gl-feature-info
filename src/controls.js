@@ -108,7 +108,7 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
         this._editContainer = document.createElement('div');
         this._editContainer.className = 'edit-ctrl';
-        this._editContainer.innerHTML = '<div class="edit-icon"></div>' +
+        this._editContainer.innerHTML = '<div class="edit-tools"><a class="edit-icon" title="Edit feature information"></a></div>' +
             '<div class="edit-form"><label>Name: <input name="name"></label><div><button type="button" data-btn-action="ok">OK</button><button type="button" data-btn-action="cancel">Cancel</button></div></div>';
         this._container.appendChild(this._editContainer);
 
@@ -117,25 +117,26 @@ class BaseEditableInfoControl extends BaseInfoControl {
     }
 
     registerDomEvents() {
-        this._editContainer.querySelector('.edit-icon').addEventListener('click', this.onClickEditIcon.bind(this));
+        this._editContainer.querySelector('.edit-icon').addEventListener('click', this.onClickEditMetadata.bind(this));
         this._editContainer.querySelector('.edit-form button[data-btn-action=ok]').addEventListener('click', this.onClickOKEditButton.bind(this));
         this._editContainer.querySelector('.edit-form button[data-btn-action=cancel]').addEventListener('click', this.onClickCancelEditButton.bind(this));
         this._editContainer.querySelector('.edit-form input').addEventListener('keyup', this.onEditFormInputKeyup.bind(this));
     }
 
-    onClickEditIcon() {
+    onClickEditMetadata(e) {
+        e.preventDefault();
         this.displayEditForm();
     }
 
     displayEditForm() {
         this._editContainer.querySelector('.edit-form').style.display = 'block';
-        this._editContainer.querySelector('.edit-icon').style.display = 'none';
+        this._editContainer.querySelector('.edit-tools').style.display = 'none';
         this._editContainer.querySelector('input').focus();
     }
 
     hideEditForm() {
         this._editContainer.querySelector('.edit-form').style.display = 'none';
-        this._editContainer.querySelector('.edit-icon').style.display = 'block';
+        this._editContainer.querySelector('.edit-tools').style.display = 'flex';
     }
 
     saveEditForm() {
