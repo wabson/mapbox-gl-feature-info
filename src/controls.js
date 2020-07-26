@@ -202,7 +202,7 @@ class LineStringInfoControl extends BaseEditableInfoControl {
         this.setFeaturesText(features, state);
         this._container.style.display = 'block';
         const lineString = features[0];
-        this._editContainer.querySelector('input').value = this.getFeatureName(lineString, state);
+        this._editContainer.querySelector('input').value = this.getFeatureName(lineString, state) || '';
     }
 
     setFeaturesText(features, state) {

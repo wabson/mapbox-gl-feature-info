@@ -9,18 +9,20 @@ import './modes.css';
 const DrawNamedLineMode = {};
 Object.assign(DrawNamedLineMode, DrawLineString, {
     onSetup: function(opts) {
-        //var name = window.prompt('Please enter a name');
-        var name = '';
-        const additionalState = {};
         const state = DrawLineString.onSetup.call(this, opts);
-        this.setupNameFormControl(state);
-        if (name !== null && name.length > 0) {
-            additionalState['name'] = name;
+        const isNameRequired = opts.isNameRequired === true;
+        const featureName = opts.featureName;
+        const showNamePrompt = opts.showNamePrompt === true || (isNameRequired && !featureName);
+        const extendedState = Object.assign(state, {
+            isNameRequired: isNameRequired,
+            name: featureName
+        });
+        if (showNamePrompt) {
+            this.setupNameFormControl(extendedState);
+            this.updateUIClasses({ mouse: DrawConstants.cursors.MOVE });
+            this._ctx.ui.updateMapClasses();
         }
-        this.updateUIClasses({ mouse: DrawConstants.cursors.MOVE });
-        this._ctx.ui.updateMapClasses();
-        //this.changeMode(DrawConstants.modes.SIMPLE_SELECT, {}, { silent: true });
-        return Object.assign(state, additionalState);
+        return extendedState;
     },
     onStop: function(state) {
         DrawLineString.onStop.call(this, state);
@@ -37,8 +39,7 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
         }
     },
     clickAnywhere: function(state, e) {
-        console.log('clickAnywhere');
-        if (!state.name) {
+        if (state.isNameRequired === true && !state.name) {
             return this.changeMode(DrawConstants.modes.SIMPLE_SELECT);
         } else {
             return DrawLineString.clickAnywhere.call(this, state, e);
@@ -50,6 +51,9 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
         this._inputEl = document.createElement('input');
         this._inputEl.type = 'text';
         this._inputEl.className = 'mapboxgl-draw-named-line--name-input';
+        if (state.featureName) {
+            this._inputEl.value = state.featureName;
+        }
         const createButton = document.createElement('button');
         createButton.textContent = 'Create';
         createButton.setAttribute('type', 'button');
