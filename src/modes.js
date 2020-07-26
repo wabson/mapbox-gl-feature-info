@@ -3,6 +3,7 @@ import DrawLineString from '@mapbox/mapbox-gl-draw/src/modes/draw_line_string';
 import * as CommonSelectors from '@mapbox/mapbox-gl-draw/src/lib/common_selectors';
 
 import Constants from './constants';
+import './common.css';
 import './modes.css';
 
 const DrawNamedLineMode = {};
@@ -22,7 +23,6 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
         return Object.assign(state, additionalState);
     },
     onStop: function(state) {
-        console.log('onStop', state.line);
         DrawLineString.onStop.call(this, state);
         this.map.setFeatureState({ id: state.line.id, source: DrawConstants.sources.HOT}, { name: state.name });
         this.removeNameFormControl();
@@ -46,7 +46,7 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
     },
     setupNameFormControl: function(state) {
         this._formContainerEl = document.createElement('div');
-        this._formContainerEl.className = 'mapboxgl-draw-named-line--name-container';
+        this._formContainerEl.className = 'mapboxgl-draw-named-line--name-container mapboxgl-custom-control';
         this._inputEl = document.createElement('input');
         this._inputEl.type = 'text';
         this._inputEl.className = 'mapboxgl-draw-named-line--name-input';

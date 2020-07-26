@@ -13,3 +13,32 @@
 .mapbox-ctrl-feature-info:empty {
     display: none;
 }
+.mapbox-ctrl-feature-info .edit-ctrl {
+    display: flex;
+    flex-direction: column-reverse;
+}
+.mapbox-ctrl-feature-info .edit-ctrl > .edit-icon {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCA4IDgiPgogIDxwYXRoIGQ9Ik02IDBsLTEgMSAyIDIgMS0xLTItMnptLTIgMmwtNCA0djJoMmw0LTQtMi0yeiIgLz4KPC9zdmc+);
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: 12px 12px;
+    align-self: flex-end;
+    cursor: pointer;
+}
+.mapbox-ctrl-feature-info .edit-icon {
+    margin-top: 5px;
+}
+.mapbox-ctrl-feature-info .edit-ctrl > .edit-form {
+    margin-top: 5px;
+    display: none;
+}
+.mapbox-ctrl-feature-info input {
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+.mapbox-ctrl-feature-info button[data-btn-action=cancel] {
+    margin-left: 5px;
+}

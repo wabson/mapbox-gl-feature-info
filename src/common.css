@@ -1,0 +1,25 @@
+.mapboxgl-custom-control {
+    background-color: rgb(255, 255, 255);
+    font-size: 11px;
+    line-height: 18px;
+    margin: 0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+    font: 12px/20px Helvetica Neue,Arial,Helvetica,sans-serif;
+}
+.mapboxgl-custom-control button, .mapboxgl-custom-control input {
+    font: 12px/20px Helvetica Neue,Arial,Helvetica,sans-serif;
+    background-color: #fff;
+    border: 1px solid #999;
+    border-radius: 3px;
+    color: #333;
+    padding: 2px 5px;
+}
+.mapboxgl-custom-control button {
+    font-weight: bold;
+}
+.mapboxgl-custom-control button:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
