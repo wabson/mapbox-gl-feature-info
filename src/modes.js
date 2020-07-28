@@ -7,12 +7,17 @@ import './common.css';
 import './modes.css';
 
 const DrawNamedLineMode = {};
+
 Object.assign(DrawNamedLineMode, DrawLineString, {
+
+    isNameRequired: false,
+    showNamePrompt: true,
+
     onSetup: function(opts) {
         const state = DrawLineString.onSetup.call(this, opts);
-        const isNameRequired = opts.isNameRequired === true;
+        const isNameRequired = this.isNameRequired === true;
         const featureName = opts.featureName;
-        const showNamePrompt = opts.showNamePrompt === true || (isNameRequired && !featureName);
+        const showNamePrompt = (opts.showNamePrompt !== undefined ? opts.showNamePrompt === true : this.showNamePrompt === true) || (isNameRequired && !featureName);
         const extendedState = Object.assign(state, {
             isNameRequired: isNameRequired,
             name: featureName
@@ -44,6 +49,7 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
         if (state.isNameRequired === true && !state.name) {
             return this.changeMode(DrawConstants.modes.SIMPLE_SELECT);
         } else {
+            this.removeNameFormControl();
             return DrawLineString.clickAnywhere.call(this, state, e);
         }
     },
