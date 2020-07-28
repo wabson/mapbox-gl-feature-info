@@ -213,6 +213,10 @@ class LineStringInfoControl extends BaseEditableInfoControl {
             className: 'add-feature-point',
             title: 'Add point to line',
             handler: this.onClickAddLinePoint
+        }, {
+            className: 'split-line',
+            title: 'Split line',
+            handler: this.onClickSplitLine
         }]);
     }
 
@@ -301,6 +305,25 @@ class LineStringInfoControl extends BaseEditableInfoControl {
             const mid = midpoint(selectedLine.geometry.coordinates[pointIndex], selectedLine.geometry.coordinates[pointIndex + 1]);
             selectedLine.geometry.coordinates.splice(pointIndex + 1, 0, mid.geometry.coordinates);
             this.drawControl.add(selectedLine);
+        }
+    }
+
+    splitLine(selectedLine, selectedPoint) {
+        const pointIndex = this.findPointInLine(selectedLine, selectedPoint);
+        if (0 < pointIndex && pointIndex < selectedLine.geometry.coordinates.length - 2) {
+            const splitPoint = pointIndex + 1;
+            const newLine = {
+                type: DrawConstants.geojsonTypes.FEATURE,
+                geometry: {
+                    type: DrawConstants.geojsonTypes.LINE_STRING,
+                    coordinates: selectedLine.geometry.coordinates.slice(splitPoint)
+                },
+                properties: {}
+            };
+            selectedLine.geometry.coordinates = selectedLine.geometry.coordinates.slice(0, splitPoint);
+            this.drawControl.add(selectedLine);
+            const newFeatureId = this.drawControl.add(newLine);
+            return newFeatureId;
         }
     }
 
