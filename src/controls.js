@@ -213,10 +213,12 @@ class BaseEditableInfoControl extends BaseInfoControl {
     }
 
     saveEditForm() {
+        const selectedFeatures = this.drawControl.getSelected().features;
         const newName = this._editContainer.querySelector('input').value;
-        this._map.setFeatureState({id: this._features[0].id, source: DrawConstants.sources.HOT},
-            {name: newName});
-        this.setFeaturesText(this._features, {name: newName});
+        for (const feature of selectedFeatures) {
+            this.drawControl.setFeatureProperty(feature.id, 'name', newName);
+        }
+        this.setFeaturesText(selectedFeatures, {name: newName});
     }
 
     onEditFormInputKeyup(e) {

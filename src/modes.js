@@ -26,7 +26,9 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
     },
     onStop: function(state) {
         DrawLineString.onStop.call(this, state);
-        this.map.setFeatureState({ id: state.line.id, source: DrawConstants.sources.HOT}, { name: state.name });
+        if (state.name) {
+            this._ctx.store.setFeatureProperty(state.line.id, 'name', state.name);
+        }
         this.removeNameFormControl();
     },
     onMouseMove: function(state, e) {
