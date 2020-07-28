@@ -14,7 +14,7 @@
     display: none;
 }
 .mapbox-ctrl-feature-info .edit-ctrl .edit-tools {
-    display: flex;
+    display: none;
     flex-direction: row;
     justify-content: flex-end;
     margin-top: 5px;

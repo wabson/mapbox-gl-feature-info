@@ -181,18 +181,35 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     onClickEditInfo(e) {
         e.preventDefault();
-        this.displayEditForm();
+        this.showEditForm();
+        this.hideToolbar();
     }
 
-    displayEditForm() {
+    showEditForm() {
         this._editContainer.querySelector('.edit-form').style.display = 'block';
-        this._editContainer.querySelector('.edit-tools').style.display = 'none';
         this._editContainer.querySelector('input').focus();
     }
 
     hideEditForm() {
         this._editContainer.querySelector('.edit-form').style.display = 'none';
+    }
+
+    showToolbar() {
         this._editContainer.querySelector('.edit-tools').style.display = 'flex';
+    }
+
+    hideToolbar() {
+        this._editContainer.querySelector('.edit-tools').style.display = 'none';
+    }
+
+    isEditingSupported() {
+        const mode = this.drawControl.getMode();
+        return mode === DrawConstants.modes.SIMPLE_SELECT || mode === DrawConstants.modes.DIRECT_SELECT;
+    }
+
+    stopEditing() {
+        this.hideEditForm();
+        this.showToolbar();
     }
 
     saveEditForm() {
@@ -205,7 +222,7 @@ class BaseEditableInfoControl extends BaseInfoControl {
     onEditFormInputKeyup(e) {
         if (CommonSelectors.isEnterKey(e)) {
             this.saveEditForm();
-            this.hideEditForm();
+            this.stopEditing();
         } else if (CommonSelectors.isEscapeKey(e)) {
             this.hideEditForm();
         }
@@ -213,16 +230,21 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     onClickOKEditButton() {
         this.saveEditForm();
-        this.hideEditForm();
+        this.stopEditing();
     }
 
     onClickCancelEditButton() {
-        this.hideEditForm();
+        this.stopEditing();
     }
 
     setFeatures(features, state) {
         super.setFeatures(features, state);
         this.hideEditForm();
+        if (this.isEditingSupported()) {
+            this.showToolbar();
+        } else {
+            this.hideToolbar();
+        }
         const nameValue = features.length === 1 ? this.getFeatureName(features[0], state) || '' : '';
         this._editContainer.querySelector('input').value = nameValue;
     }
