@@ -145,7 +145,11 @@ class BaseEditableInfoControl extends BaseInfoControl {
     constructor(options) {
         super(options);
         this.drawControl = options && options.drawControl;
-        this.editActions = [];
+        this.editActions = [{
+            className: 'edit-info',
+            title: 'Edit feature information',
+            handler: this.onClickEditInfo
+        }];
     }
 
     onAdd(map) {
@@ -229,13 +233,9 @@ class LineStringInfoControl extends BaseEditableInfoControl {
 
     constructor(options) {
         super(options);
-        this.editActions = [{
-            className: 'edit-info',
-            title: 'Edit feature information',
-            handler: this.onClickEditInfo
-        }, {
+        this.editActions = this.editActions.concat([{
             className: 'duplicate-feature',
-            title: 'Duplicate feature',
+            title: 'Duplicate line',
             handler: this.onClickDuplicateFeature
         }, {
             className: 'add-feature-point',
@@ -361,15 +361,6 @@ class LineStringInfoControl extends BaseEditableInfoControl {
 }
 
 class PointInfoControl extends BaseEditableInfoControl {
-
-    constructor(options) {
-        super(options);
-        this.editActions = [{
-            className: 'edit-info',
-            title: 'Edit feature information',
-            handler: this.onClickEditInfo
-        }];
-    }
 
     isSupportedFeatures(features) {
         return features.length == 1 && features[0].geometry.type === DrawConstants.geojsonTypes.POINT;
