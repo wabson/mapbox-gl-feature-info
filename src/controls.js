@@ -103,12 +103,19 @@ class BaseInfoControl {
 
 class BaseEditableInfoControl extends BaseInfoControl {
 
+    constructor(options) {
+        super(options);
+        this.drawControl = options && options.drawControl;
+        this.editActions = [];
+    }
+
     onAdd(map) {
         const container = super.onAdd(map);
 
         this._editContainer = document.createElement('div');
         this._editContainer.className = 'edit-ctrl';
-        this._editContainer.innerHTML = '<div class="edit-tools"><a class="edit-icon" title="Edit feature information"></a></div>' +
+        this._editContainer.innerHTML = '<div class="edit-tools">' +
+            this.editToolbarHtml() + '</div>' +
             '<div class="edit-form"><label>Name: <input name="name"></label><div><button type="button" data-btn-action="ok">OK</button><button type="button" data-btn-action="cancel">Cancel</button></div></div>';
         this._container.appendChild(this._editContainer);
 
@@ -116,14 +123,20 @@ class BaseEditableInfoControl extends BaseInfoControl {
         return container;
     }
 
+    editToolbarHtml() {
+        return this.editActions.map((action) => `<a class="${action.className}" title="${action.title}"></a>`).join('');
+    }
+
     registerDomEvents() {
-        this._editContainer.querySelector('.edit-icon').addEventListener('click', this.onClickEditMetadata.bind(this));
+        for (const action of this.editActions) {
+            this._editContainer.querySelector(`.${action.className}`).addEventListener('click', action.handler.bind(this));
+        }
         this._editContainer.querySelector('.edit-form button[data-btn-action=ok]').addEventListener('click', this.onClickOKEditButton.bind(this));
         this._editContainer.querySelector('.edit-form button[data-btn-action=cancel]').addEventListener('click', this.onClickCancelEditButton.bind(this));
         this._editContainer.querySelector('.edit-form input').addEventListener('keyup', this.onEditFormInputKeyup.bind(this));
     }
 
-    onClickEditMetadata(e) {
+    onClickEditInfo(e) {
         e.preventDefault();
         this.displayEditForm();
     }
@@ -174,8 +187,21 @@ class BaseEditableInfoControl extends BaseInfoControl {
 class LineStringInfoControl extends BaseEditableInfoControl {
 
     constructor(options) {
-        super();
+        super(options);
         this.distanceUnits = options && options.distanceUnits || 'kilometers';
+        this.editActions = [{
+            className: 'edit-info',
+            title: 'Edit feature information',
+            handler: this.onClickEditInfo
+        }, {
+            className: 'duplicate-feature',
+            title: 'Duplicate feature',
+            handler: this.onClickDuplicateFeature
+        }, {
+            className: 'extend-feature',
+            title: 'Extend feature',
+            handler: this.onClickExtendFeature
+        }];
     }
 
     registerListeners() {
@@ -194,8 +220,33 @@ class LineStringInfoControl extends BaseEditableInfoControl {
         this.setFeatures([e.feature], e.state);
     }
 
+    onClickExtendFeature(e) {
+        e.preventDefault();
+        const fromFeature = this._features[0];
+        this.drawControl.changeMode(
+            DrawConstants.modes.DRAW_LINE_STRING, {
+            featureId: fromFeature.id,
+            from: {
+                type: DrawConstants.geojsonTypes.POINT,
+                coordinates: fromFeature.geometry.coordinates[fromFeature.geometry.coordinates.length - 1]
+            }
+        });
+    }
+
+    onClickDuplicateFeature(e) {
+        e.preventDefault();
+        const newLine = Object.assign({}, this._features[0]);
+        delete newLine.id;
+        const newFeatureIds = this.drawControl.add(newLine);
+        this.drawControl.changeMode(
+            DrawConstants.modes.SIMPLE_SELECT,
+            { featureIds: newFeatureIds }
+        );
+        this.setFeatures(this.drawControl.getSelected().features);
+    }
+
     isSupportedFeatures(features) {
-        return features.length == 1 && features[0].geometry.type === 'LineString';
+        return features.length == 1 && features[0].geometry.type === DrawConstants.geojsonTypes.LINE_STRING;
     }
 
     setFeatures(features, state) {
@@ -218,22 +269,32 @@ class LineStringInfoControl extends BaseEditableInfoControl {
 
 class PointInfoControl extends BaseEditableInfoControl {
 
+    constructor(options) {
+        super(options);
+        this.distanceUnits = options && options.distanceUnits || 'kilometers';
+        this.editActions = [{
+            className: 'edit-info',
+            title: 'Edit feature information',
+            handler: this.onClickEditInfo
+        }];
+    }
+
     isSupportedFeatures(features) {
-        return features.length == 1 && features[0].geometry.type === 'Point';
+        return features.length == 1 && features[0].geometry.type === DrawConstants.geojsonTypes.POINT;
     }
 
     setFeatures(features, state) {
         super.setFeatures(features);
         this.setFeaturesText(features, state);
+        this._container.style.display = 'block';
     }
 
     setFeaturesText(features, state) {
         const point = features[0];
         const pointName = this.getFeatureName(point, state);
         this._textContainer.textContent = pointName || 'Untitled';
-        this._container.style.display = 'block';
     }
 
 }
 
-export { LineStringInfoControl, PointInfoControl };
+export { LineStringInfoControl, MultiLineInfoControl, PointInfoControl };

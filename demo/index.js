@@ -35,5 +35,8 @@ var draw = new MapboxDraw({
 });
 
 map.addControl(draw, 'top-right');
-map.addControl(new LineStringInfoControl({distanceUnits: 'kilometers'}), 'top-right');
-map.addControl(new PointInfoControl({distanceUnits: 'kilometers'}), 'top-right');
+map.addControl(new LineStringInfoControl({
+    distanceUnits: 'kilometers',
+    drawControl: draw
+}), 'top-right');
+map.addControl(new PointInfoControl({drawControl: draw}), 'top-right');
