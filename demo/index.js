@@ -37,7 +37,23 @@ var draw = new MapboxDraw({
 map.addControl(draw);
 map.addControl(new LineStringInfoControl({
     distanceUnits: 'kilometers',
-    drawControl: draw
+    drawControl: draw,
+    editProperties: [
+        {
+            name: 'name',
+            label: 'Name'
+        }
+    ],
+    defaultTitle: 'Untitled'
 }));
-map.addControl(new PointInfoControl({drawControl: draw}));
+map.addControl(new PointInfoControl({
+    drawControl: draw,
+    editProperties: [
+        {
+            name: 'name',
+            label: 'Name'
+        }
+    ],
+    defaultTitle: 'Untitled'
+}));
 map.addControl(new MultiLineInfoControl({drawControl: draw}));

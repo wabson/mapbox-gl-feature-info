@@ -17,10 +17,16 @@ const DEFAULT_DISTANCE_UNITS = 'kilometers';
 const DISTANCE_UNITS_NONE = 'none';
 const DEFAULT_CONTROL_POSITION = 'top-right';
 
+const TITLE_FEATURE = 'Feature';
+const TITLE_LINE = 'Line';
+const TITLE_POINT = 'Point';
+const TITLE_MULTIPLE_LINES = 'Multiple lines';
+
 class BaseInfoControl {
 
     constructor(options) {
         this.distanceUnits = options && options.distanceUnits || DEFAULT_DISTANCE_UNITS;
+        this.defaultTitle = options && options.defaultTitle || this.getDefaultTitle();
     }
 
     onAdd(map) {
@@ -39,6 +45,10 @@ class BaseInfoControl {
 
     getDefaultPosition() {
         return DEFAULT_CONTROL_POSITION;
+    }
+
+    getDefaultTitle() {
+        return TITLE_FEATURE;
     }
 
     registerListeners() {
@@ -112,9 +122,9 @@ class BaseInfoControl {
             lineDistance = features.reduce((accumulated, feature) => accumulated + length(feature, {units: this.distanceUnits}), 0);
         }
         if (features.length === 1) {
-            title = this.getFeatureName(features[0], state) || 'Untitled';
+            title = this.getFeatureName(features[0], state) || this.defaultTitle;
         } else {
-            title = 'Multiple lines';
+            title = this.defaultTitle;
         }
         if (title !== '' && lineDistance > 0) {
             const unitName = DISTANCE_ABBRS[this.distanceUnits];
@@ -145,11 +155,12 @@ class BaseEditableInfoControl extends BaseInfoControl {
     constructor(options) {
         super(options);
         this.drawControl = options && options.drawControl;
-        this.editActions = [{
+        this.editProperties = options.editProperties || [];
+        this.editActions = this.editProperties.length ? [{
             className: 'edit-info',
             title: 'Edit feature information',
             handler: this.onClickEditInfo
-        }];
+        }] : [];
     }
 
     onAdd(map) {
@@ -159,7 +170,9 @@ class BaseEditableInfoControl extends BaseInfoControl {
         this._editContainer.className = 'edit-ctrl';
         this._editContainer.innerHTML = '<div class="edit-tools">' +
             this.editToolbarHtml() + '</div>' +
-            '<div class="edit-form"><label>Name: <input name="name"></label><div><button type="button" data-btn-action="ok">OK</button><button type="button" data-btn-action="cancel">Cancel</button></div></div>';
+            '<div class="edit-form">' +
+            this.editProperties.map((prop) => `<div><label>${prop.label}: <input name="${prop.name}"></label></div>`).join('') +
+            '<div><button type="button" data-btn-action="ok">OK</button><button type="button" data-btn-action="cancel">Cancel</button></div></div>';
         this._container.appendChild(this._editContainer);
 
         this.registerDomEvents();
@@ -176,7 +189,9 @@ class BaseEditableInfoControl extends BaseInfoControl {
         }
         this._editContainer.querySelector('.edit-form button[data-btn-action=ok]').addEventListener('click', this.onClickOKEditButton.bind(this));
         this._editContainer.querySelector('.edit-form button[data-btn-action=cancel]').addEventListener('click', this.onClickCancelEditButton.bind(this));
-        this._editContainer.querySelector('.edit-form input').addEventListener('keyup', this.onEditFormInputKeyup.bind(this));
+        for (const editProperty of this.editProperties) {
+            this._editContainer.querySelector(`.edit-form input[name="${editProperty.name}"]`).addEventListener('keyup', this.onEditFormInputKeyup.bind(this));
+        }
     }
 
     onClickEditInfo(e) {
@@ -187,7 +202,10 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     showEditForm() {
         this._editContainer.querySelector('.edit-form').style.display = 'block';
-        this._editContainer.querySelector('input').focus();
+        const firstPropertyInput = this._editContainer.querySelector('input');
+        if (firstPropertyInput) {
+            firstPropertyInput.focus();
+        }
     }
 
     hideEditForm() {
@@ -248,7 +266,10 @@ class BaseEditableInfoControl extends BaseInfoControl {
             this.hideToolbar();
         }
         const nameValue = features.length === 1 ? this.getFeatureName(features[0], state) || '' : '';
-        this._editContainer.querySelector('input').value = nameValue;
+        const namePropertyInput = this._editContainer.querySelector('input[name=name]');
+        if (namePropertyInput) {
+            namePropertyInput.value = nameValue;
+        }
     }
 
 }
@@ -270,6 +291,10 @@ class LineStringInfoControl extends BaseEditableInfoControl {
             title: 'Split line',
             handler: this.onClickSplitLine
         }]);
+    }
+
+    getDefaultTitle() {
+        return TITLE_LINE;
     }
 
     registerListeners() {
@@ -395,6 +420,10 @@ class PointInfoControl extends BaseEditableInfoControl {
         return features.length == 1 && features[0].geometry.type === DrawConstants.geojsonTypes.POINT;
     }
 
+    getDefaultTitle() {
+        return TITLE_POINT;
+    }
+
 }
 
 class MultiLineInfoControl extends BaseEditableInfoControl {
@@ -434,6 +463,10 @@ class MultiLineInfoControl extends BaseEditableInfoControl {
 
     isSupportedFeatures(features) {
         return features.length == 2 && features.every((feature) => feature.geometry.type === DrawConstants.geojsonTypes.LINE_STRING);
+    }
+
+    getDefaultTitle() {
+        return TITLE_MULTIPLE_LINES;
     }
 
 }
