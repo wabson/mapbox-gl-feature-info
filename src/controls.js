@@ -13,7 +13,13 @@ const DISTANCE_ABBRS = {
     'kilometers': 'km'
 };
 
+const DEFAULT_CONTROL_POSITION = 'top-right';
+
 class BaseInfoControl {
+
+    constructor(options) {
+        this.distanceUnits = options && options.distanceUnits || DEFAULT_DISTANCE_UNITS;
+    }
 
     onAdd(map) {
         this._map = map;
@@ -27,6 +33,10 @@ class BaseInfoControl {
         this.registerListeners();
 
         return this._container;
+    }
+
+    getDefaultPosition() {
+        return DEFAULT_CONTROL_POSITION;
     }
 
     registerListeners() {
