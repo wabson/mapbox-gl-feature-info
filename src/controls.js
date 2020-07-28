@@ -1,6 +1,7 @@
 import DrawConstants from '@mapbox/mapbox-gl-draw/src/constants';
 import * as CommonSelectors from '@mapbox/mapbox-gl-draw/src/lib/common_selectors';
 import length from '@turf/length';
+import midpoint from '@turf/midpoint';
 import { lineString } from '@turf/helpers';
 
 import Constants from './constants';
@@ -199,10 +200,10 @@ class LineStringInfoControl extends BaseEditableInfoControl {
             title: 'Duplicate feature',
             handler: this.onClickDuplicateFeature
         }, {
-            className: 'extend-feature',
-            title: 'Extend feature',
-            handler: this.onClickExtendFeature
-        }];
+            className: 'add-feature-point',
+            title: 'Add point to line',
+            handler: this.onClickAddLinePoint
+        }]);
     }
 
     registerListeners() {
@@ -221,17 +222,23 @@ class LineStringInfoControl extends BaseEditableInfoControl {
         this.setFeatures([e.feature], e.state);
     }
 
-    onClickExtendFeature(e) {
+    onClickAddLinePoint(e) {
         e.preventDefault();
-        const fromFeature = this._features[0];
-        this.drawControl.changeMode(
-            DrawConstants.modes.DRAW_LINE_STRING, {
-            featureId: fromFeature.id,
-            from: {
-                type: DrawConstants.geojsonTypes.POINT,
-                coordinates: fromFeature.geometry.coordinates[fromFeature.geometry.coordinates.length - 1]
+        const selected = this.drawControl.getSelected(), mode = this.drawControl.getMode();
+        if (selected.features.length !== 1 || selected.features[0].geometry.type !== DrawConstants.geojsonTypes.LINE_STRING) {
+            return;
+        }
+        const selectedLine = selected.features[0];
+        if (mode === DrawConstants.modes.SIMPLE_SELECT) {
+            this.extendLineString(selectedLine);
+        } else if (mode === DrawConstants.modes.DIRECT_SELECT) {
+            const selectedPoints = this.drawControl.getSelectedPoints();
+            if (selectedPoints.features.length === 1) {
+                const selectedPoint = selectedPoints.features[0];
+                this.insertPointIntoLine(selectedLine, selectedPoint);
             }
-        });
+        }
+
     }
 
     onClickDuplicateFeature(e) {
@@ -244,6 +251,47 @@ class LineStringInfoControl extends BaseEditableInfoControl {
             { featureIds: newFeatureIds }
         );
         this.setFeatures(this.drawControl.getSelected().features);
+    }
+
+    onClickSplitLine(e) {
+        e.preventDefault();
+        const selected = this.drawControl.getSelected(), mode = this.drawControl.getMode();
+        if (mode === DrawConstants.modes.DIRECT_SELECT) {
+            const selectedPoints = this.drawControl.getSelectedPoints();
+            if (selectedPoints.features.length === 1) {
+                this.splitLine(selected.features[0], selectedPoints.features[0]);
+            }
+        }
+    }
+
+    extendLineString(fromFeature) {
+        this.drawControl.changeMode(
+            DrawConstants.modes.DRAW_LINE_STRING, {
+            featureId: fromFeature.id,
+            from: {
+                type: DrawConstants.geojsonTypes.POINT,
+                coordinates: fromFeature.geometry.coordinates[fromFeature.geometry.coordinates.length - 1]
+            },
+            showNamePrompt: false,
+            featureName: fromFeature.properties.name
+        });
+    }
+
+    findPointInLine(line, point) {
+        return line.geometry.coordinates.findIndex(
+            (latlng) => latlng.every((position, index) => position === point.geometry.coordinates[index])
+        );
+    }
+
+    insertPointIntoLine(selectedLine, selectedPoint) {
+        const pointIndex = this.findPointInLine(selectedLine, selectedPoint);
+        if (pointIndex === selectedLine.geometry.coordinates.length - 1) {
+            this.extendLineString(selectedLine);
+        } else {
+            const mid = midpoint(selectedLine.geometry.coordinates[pointIndex], selectedLine.geometry.coordinates[pointIndex + 1]);
+            selectedLine.geometry.coordinates.splice(pointIndex + 1, 0, mid.geometry.coordinates);
+            this.drawControl.add(selectedLine);
+        }
     }
 
     isSupportedFeatures(features) {
