@@ -13,6 +13,8 @@ const DISTANCE_ABBRS = {
     'kilometers': 'km'
 };
 
+const DEFAULT_DISTANCE_UNITS = 'kilometers';
+const DISTANCE_UNITS_NONE = 'none';
 const DEFAULT_CONTROL_POSITION = 'top-right';
 
 class BaseInfoControl {
@@ -97,12 +99,37 @@ class BaseInfoControl {
     }
 
     getFeatureName(feature, state=null) {
-        state = state || this._map.getFeatureState({id: feature.id, source: DrawConstants.sources.HOT});
+        state = state || this.drawControl.get(feature.id).properties;
         return state ? state.name : null;
     }
 
-    setFeatures(features) {
-        this._features = features;
+    getFeaturesTitle(features, state=null) {
+        let lineDistance = 0, title = '';
+        if (features.length > 0 && features.every(
+            (feature) => feature.type === DrawConstants.geojsonTypes.LINE_STRING ||
+            feature.type === DrawConstants.geojsonTypes.FEATURE && feature.geometry.type === DrawConstants.geojsonTypes.LINE_STRING
+            ) && this.distanceUnits !== DISTANCE_UNITS_NONE) {
+            lineDistance = features.reduce((accumulated, feature) => accumulated + length(feature, {units: this.distanceUnits}), 0);
+        }
+        if (features.length === 1) {
+            title = this.getFeatureName(features[0], state) || 'Untitled';
+        } else {
+            title = 'Multiple lines';
+        }
+        if (title !== '' && lineDistance > 0) {
+            const unitName = DISTANCE_ABBRS[this.distanceUnits];
+            title += ': ' + lineDistance.toLocaleString() + ' ' + unitName;
+        }
+        return title;
+    }
+
+    setFeatures(features, state) {
+        this.setFeaturesText(features, state);
+        this._container.style.display = 'block';
+    }
+
+    setFeaturesText(features, state) {
+        this._textContainer.textContent = this.getFeaturesTitle(features, state);
     }
 
     onRemove() {
@@ -189,9 +216,11 @@ class BaseEditableInfoControl extends BaseInfoControl {
         this.hideEditForm();
     }
 
-    setFeatures(features) {
-        super.setFeatures(features);
+    setFeatures(features, state) {
+        super.setFeatures(features, state);
         this.hideEditForm();
+        const nameValue = features.length === 1 ? this.getFeatureName(features[0], state) || '' : '';
+        this._editContainer.querySelector('input').value = nameValue;
     }
 
 }
@@ -200,7 +229,6 @@ class LineStringInfoControl extends BaseEditableInfoControl {
 
     constructor(options) {
         super(options);
-        this.distanceUnits = options && options.distanceUnits || 'kilometers';
         this.editActions = [{
             className: 'edit-info',
             title: 'Edit feature information',
@@ -330,30 +358,12 @@ class LineStringInfoControl extends BaseEditableInfoControl {
     isSupportedFeatures(features) {
         return features.length == 1 && features[0].geometry.type === DrawConstants.geojsonTypes.LINE_STRING;
     }
-
-    setFeatures(features, state) {
-        super.setFeatures(features);
-        this.setFeaturesText(features, state);
-        this._container.style.display = 'block';
-        const lineString = features[0];
-        this._editContainer.querySelector('input').value = this.getFeatureName(lineString, state) || '';
-    }
-
-    setFeaturesText(features, state) {
-        const lineString = features[0];
-        const lineName = this.getFeatureName(lineString, state);
-        const unitName = DISTANCE_ABBRS[this.distanceUnits];
-        const lineDistance = length(lineString, {units: this.distanceUnits});
-        this._textContainer.textContent = (lineName || 'Untitled') + ': ' +
-            lineDistance.toLocaleString() + ' ' + unitName;
-    }
 }
 
 class PointInfoControl extends BaseEditableInfoControl {
 
     constructor(options) {
         super(options);
-        this.distanceUnits = options && options.distanceUnits || 'kilometers';
         this.editActions = [{
             className: 'edit-info',
             title: 'Edit feature information',
@@ -365,25 +375,12 @@ class PointInfoControl extends BaseEditableInfoControl {
         return features.length == 1 && features[0].geometry.type === DrawConstants.geojsonTypes.POINT;
     }
 
-    setFeatures(features, state) {
-        super.setFeatures(features);
-        this.setFeaturesText(features, state);
-        this._container.style.display = 'block';
-    }
-
-    setFeaturesText(features, state) {
-        const point = features[0];
-        const pointName = this.getFeatureName(point, state);
-        this._textContainer.textContent = pointName || 'Untitled';
-    }
-
 }
 
 class MultiLineInfoControl extends BaseEditableInfoControl {
 
     constructor(options) {
         super(options);
-        this.distanceUnits = options && options.distanceUnits || 'kilometers';
         this.editActions = [{
             className: 'join-lines',
             title: 'Join lines',
@@ -416,19 +413,6 @@ class MultiLineInfoControl extends BaseEditableInfoControl {
 
     isSupportedFeatures(features) {
         return features.length == 2 && features.every((feature) => feature.geometry.type === DrawConstants.geojsonTypes.LINE_STRING);
-    }
-
-    setFeatures(features, state) {
-        super.setFeatures(features);
-        this.setFeaturesText(features, state);
-        this._container.style.display = 'block';
-    }
-
-    setFeaturesText(features) {
-        const unitName = DISTANCE_ABBRS[this.distanceUnits];
-        const lineDistance = features.reduce((accumulator, feature) => accumulator + length(feature, {units: this.distanceUnits}), 0);
-        this._textContainer.textContent = 'Multiple lines: ' +
-            lineDistance.toLocaleString() + ' ' + unitName;
     }
 
 }
