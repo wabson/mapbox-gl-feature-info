@@ -1,6 +1,7 @@
 import DrawConstants from '@mapbox/mapbox-gl-draw/src/constants';
 import * as CommonSelectors from '@mapbox/mapbox-gl-draw/src/lib/common_selectors';
 import length from '@turf/length';
+import { lineString } from '@turf/helpers';
 
 import Constants from './constants';
 import './common.css';
@@ -293,6 +294,60 @@ class PointInfoControl extends BaseEditableInfoControl {
         const point = features[0];
         const pointName = this.getFeatureName(point, state);
         this._textContainer.textContent = pointName || 'Untitled';
+    }
+
+}
+
+class MultiLineInfoControl extends BaseEditableInfoControl {
+
+    constructor(options) {
+        super(options);
+        this.distanceUnits = options && options.distanceUnits || 'kilometers';
+        this.editActions = [{
+            className: 'join-lines',
+            title: 'Join lines',
+            handler: this.onClickJoinLines
+        }];
+    }
+
+    orderFeaturesByDistanceToAnother() {
+        const coordinates = this._features.map((feature) => feature.geometry.coordinates);
+        const joiningDistances = [
+            length(lineString([coordinates[0][coordinates[0].length - 1], coordinates[1][0]])),
+            length(lineString([coordinates[1][coordinates[1].length - 1], coordinates[0][0]]))
+        ];
+        return (joiningDistances[0] <= joiningDistances[1] ?
+            [ this._features[0], this._features[1] ] : [ this._features[1], this._features[0] ]);
+    }
+
+    onClickJoinLines(e) {
+        e.preventDefault();
+        const orderedFeatures = this.orderFeaturesByDistanceToAnother();
+        const startingFeature = orderedFeatures[0];
+        const removeFeature = orderedFeatures[1];
+        startingFeature.geometry.coordinates = startingFeature.geometry.coordinates.concat(removeFeature.geometry.coordinates);
+        this.drawControl.delete([removeFeature.id]).add(startingFeature);
+        // work around delete() and add() not firing selection change event
+        this._map.fire(DrawConstants.events.SELECTION_CHANGE, {
+            features: [startingFeature]
+        });
+    }
+
+    isSupportedFeatures(features) {
+        return features.length == 2 && features.every((feature) => feature.geometry.type === DrawConstants.geojsonTypes.LINE_STRING);
+    }
+
+    setFeatures(features, state) {
+        super.setFeatures(features);
+        this.setFeaturesText(features, state);
+        this._container.style.display = 'block';
+    }
+
+    setFeaturesText(features) {
+        const unitName = DISTANCE_ABBRS[this.distanceUnits];
+        const lineDistance = features.reduce((accumulator, feature) => accumulator + length(feature, {units: this.distanceUnits}), 0);
+        this._textContainer.textContent = 'Multiple lines: ' +
+            lineDistance.toLocaleString() + ' ' + unitName;
     }
 
 }

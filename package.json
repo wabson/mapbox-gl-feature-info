@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.1.2",
+    "@turf/helpers": "^6.1.4",
     "@turf/length": "^6.0.2",
     "mapbox-gl": "^1.11.1"
   },

@@ -1,6 +1,6 @@
 import mapboxgl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
-import { LineStringInfoControl, PointInfoControl } from '../src/controls';
+import { LineStringInfoControl, MultiLineInfoControl, PointInfoControl } from '../src/controls';
 import { DrawNamedLineMode } from '../src/modes';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -40,3 +40,4 @@ map.addControl(new LineStringInfoControl({
     drawControl: draw
 }), 'top-right');
 map.addControl(new PointInfoControl({drawControl: draw}), 'top-right');
+map.addControl(new MultiLineInfoControl({drawControl: draw}), 'top-right');
