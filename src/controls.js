@@ -309,7 +309,12 @@ class LineStringInfoControl extends BaseEditableInfoControl {
 
     onClickDuplicateFeature(e) {
         e.preventDefault();
-        const newLine = Object.assign({}, this._features[0]);
+        const selected = this.drawControl.getSelected();
+        if (selected.features.length !== 1) {
+            return;
+        }
+        const newLine = Object.assign({}, selected.features[0]);
+        newLine.properties = {};
         delete newLine.id;
         const newFeatureIds = this.drawControl.add(newLine);
         this.drawControl.changeMode(
@@ -404,13 +409,14 @@ class MultiLineInfoControl extends BaseEditableInfoControl {
     }
 
     orderFeaturesByDistanceToAnother() {
-        const coordinates = this._features.map((feature) => feature.geometry.coordinates);
+        const selectedFeatures = this.drawControl.getSelected().features;
+        const coordinates = selectedFeatures.map((feature) => feature.geometry.coordinates);
         const joiningDistances = [
             length(lineString([coordinates[0][coordinates[0].length - 1], coordinates[1][0]])),
             length(lineString([coordinates[1][coordinates[1].length - 1], coordinates[0][0]]))
         ];
         return (joiningDistances[0] <= joiningDistances[1] ?
-            [ this._features[0], this._features[1] ] : [ this._features[1], this._features[0] ]);
+            [ selectedFeatures[0], selectedFeatures[1] ] : [ selectedFeatures[1], selectedFeatures[0] ]);
     }
 
     onClickJoinLines(e) {
