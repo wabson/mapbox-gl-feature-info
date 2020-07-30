@@ -11,7 +11,7 @@ const DrawNamedLineMode = {};
 Object.assign(DrawNamedLineMode, DrawLineString, {
 
     isNameRequired: false,
-    showNamePrompt: true,
+    showNamePrompt: false,
 
     onSetup: function(opts) {
         const state = DrawLineString.onSetup.call(this, opts);

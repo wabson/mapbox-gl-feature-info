@@ -22,6 +22,8 @@ var map = new mapboxgl.Map({
 // Add zoom and rotation controls to the map.
 map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
+DrawNamedLineMode.showNamePrompt = true;
+
 var draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
