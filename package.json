@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "eslint src demo && webpack --watch",
     "build": "eslint src demo && webpack",
+    "build-docs": "cp dist/* docs/",
     "start": "eslint src demo && webpack-dev-server --open"
   },
   "author": "Will Abson",
