@@ -34,26 +34,28 @@ var draw = new MapboxDraw({
     styles: customMapStyles
 });
 
-map.addControl(draw);
-map.addControl(new LineStringInfoControl({
-    distanceUnits: 'kilometers',
-    drawControl: draw,
-    editProperties: [
-        {
-            name: 'name',
-            label: 'Name'
-        }
-    ],
-    defaultTitle: 'Untitled'
-}));
-map.addControl(new PointInfoControl({
-    drawControl: draw,
-    editProperties: [
-        {
-            name: 'name',
-            label: 'Name'
-        }
-    ],
-    defaultTitle: 'Untitled'
-}));
-map.addControl(new MultiLineInfoControl({drawControl: draw}));
+map.on('load', () => {
+    map.addControl(draw);
+    map.addControl(new LineStringInfoControl({
+        distanceUnits: 'kilometers',
+        drawControl: draw,
+        editProperties: [
+            {
+                name: 'name',
+                label: 'Name'
+            }
+        ],
+        defaultTitle: 'Untitled'
+    }));
+    map.addControl(new PointInfoControl({
+        drawControl: draw,
+        editProperties: [
+            {
+                name: 'name',
+                label: 'Name'
+            }
+        ],
+        defaultTitle: 'Untitled'
+    }));
+    map.addControl(new MultiLineInfoControl({drawControl: draw}));
+});
