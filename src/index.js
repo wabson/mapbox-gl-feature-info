@@ -1,4 +1,4 @@
-import { LineStringInfoControl } from './controls';
+import { LineStringInfoControl, PointInfoControl, MultiLineInfoControl } from './controls';
 import { DrawNamedLineMode } from './modes';
 
-export { LineStringInfoControl, DrawNamedLineMode };
+export { LineStringInfoControl, PointInfoControl, MultiLineInfoControl, DrawNamedLineMode };
