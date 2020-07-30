@@ -6,8 +6,11 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
     mode: 'development',
     entry: {
-      'lib': './src/index.js',
-      'demo': './demo/index.js'
+        'lib': './src/index.js',
+        'demo': './demo/index.js'
+    },
+    node: {
+        fs: 'empty'
     },
     devServer: {
         contentBase: './dist',

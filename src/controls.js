@@ -1,4 +1,4 @@
-import DrawConstants from '@mapbox/mapbox-gl-draw/src/constants';
+import * as DrawConstants from '@mapbox/mapbox-gl-draw/src/constants';
 import * as CommonSelectors from '@mapbox/mapbox-gl-draw/src/lib/common_selectors';
 import length from '@turf/length';
 import midpoint from '@turf/midpoint';

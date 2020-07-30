@@ -1,4 +1,4 @@
-import DrawConstants from '@mapbox/mapbox-gl-draw/src/constants';
+import * as DrawConstants from '@mapbox/mapbox-gl-draw/src/constants';
 import DrawLineString from '@mapbox/mapbox-gl-draw/src/modes/draw_line_string';
 import * as CommonSelectors from '@mapbox/mapbox-gl-draw/src/lib/common_selectors';
 
