@@ -13,7 +13,7 @@ the Mapbox Draw GL JS editor.
    * Additional tools to join together, extend or cut lines into
      multiple parts
 
-[View demo page](https://mapbox-gl-feature-info.github.io/)
+[View demo page](https://wabson.github.io/mapbox-gl-feature-info/)
 
 ## Usage
 
