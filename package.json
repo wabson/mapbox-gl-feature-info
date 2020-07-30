@@ -1,14 +1,15 @@
 {
-  "name": "mapbox-gl-draw-line-distance-mode",
+  "name": "@wabson/mapbox-gl-feature-info",
   "version": "0.0.1",
-  "description": "mapbox-gl-draw custom mode to show distance of a drawn line, extends draw_line_string mode",
+  "description": "Mapbox GL JS custom controls to display and allow editing of information about selected features in Mapbox Draw",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "eslint src demo && webpack --watch",
     "build": "eslint src demo && webpack",
     "build-docs": "cp dist/* docs/",
-    "start": "eslint src demo && webpack-dev-server --open"
+    "start": "eslint src demo && webpack-dev-server --open",
+    "prepublish": "npm run build"
   },
   "author": "Will Abson",
   "license": "ISC",
