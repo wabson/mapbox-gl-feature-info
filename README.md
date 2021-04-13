@@ -23,7 +23,7 @@ Include the library in your project
 
 Using `<script>` tags
 
-    <script src="node_modules/mapbox-gl-feature-info/dist/lib.bundle.js" type="application/javascript"></script>
+    <script src="node_modules/@wabson/mapbox-gl-feature-info/dist/lib.bundle.js" type="application/javascript"></script>
 
 Or ES6 import
 
