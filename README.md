@@ -23,11 +23,11 @@ Include the library in your project
 
 Using `<script>` tags
 
-    <script src="node_modules/mapbox-gl-feature-info/dist/index.js" type="application/javascript"></script>
+    <script src="node_modules/mapbox-gl-feature-info/dist/lib.bundle.js" type="application/javascript"></script>
 
 Or ES6 import
 
-    import { LineStringInfoControl, PointInfoControl, MultiLineInfoControl, DrawNamedLineMode } from mapbox-gl-feature-info
+    import { LineStringInfoControl, PointInfoControl, MultiLineInfoControl, DrawNamedLineMode } from '@wabson/mapbox-gl-feature-info';
 
 Add a basic LineString distance indicator to your map
 
@@ -47,6 +47,7 @@ var draw = new MapboxDraw({
     ...
 });
 
+var LineStringInfoControl = mapboxglFeatureInfo.LineStringInfoControl; // only for <script> tag method
 map.on('load', () => {
     map.addControl(draw);
     map.addControl(new LineStringInfoControl({
