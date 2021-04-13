@@ -28,7 +28,6 @@ module.exports = {
         new MiniCssExtractPlugin(),
         new HtmlWebpackPlugin({
             // inject: false,
-            // template: require('html-webpack-template'),
             title: 'Mapbox GL JS Draw Feature Info',
             // bodyHtmlSnippet: '<div id="map"></div>',
         })
