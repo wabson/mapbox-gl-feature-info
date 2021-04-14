@@ -232,11 +232,12 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     saveEditForm() {
         const selectedFeatures = this.drawControl.getSelected().features;
-        const newName = this._editContainer.querySelector('input').value;
-        for (const feature of selectedFeatures) {
-            this.drawControl.setFeatureProperty(feature.id, 'name', newName);
+        for (const inputEl of this._editContainer.querySelectorAll('input')) {
+            for (const feature of selectedFeatures) {
+                this.drawControl.setFeatureProperty(feature.id, inputEl.name, inputEl.value);
+            }
         }
-        this.setFeaturesText(selectedFeatures, {name: newName});
+        this.setFeaturesText(selectedFeatures);
     }
 
     onEditFormInputKeyup(e) {

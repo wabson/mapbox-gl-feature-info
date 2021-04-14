@@ -44,6 +44,10 @@ map.on('load', () => {
             {
                 name: 'name',
                 label: 'Name'
+            },
+            {
+                name: 'description',
+                label: 'Description'
             }
         ],
         defaultTitle: 'Untitled'
@@ -54,6 +58,10 @@ map.on('load', () => {
             {
                 name: 'name',
                 label: 'Name'
+            },
+            {
+                name: 'description',
+                label: 'Description'
             }
         ],
         defaultTitle: 'Untitled'
