@@ -9,11 +9,10 @@ module.exports = {
         'lib': './src/index.js',
         'demo': './demo/index.js'
     },
-    node: {
-        fs: 'empty'
-    },
     devServer: {
-        contentBase: './dist',
+        static: {
+            directory: path.join(__dirname, 'dist'),
+        }
     },
     module: {
         rules: [
@@ -32,6 +31,11 @@ module.exports = {
             // bodyHtmlSnippet: '<div id="map"></div>',
         })
     ],
+    resolve: {
+        fallback: {
+            fs: false
+        }
+    },
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
