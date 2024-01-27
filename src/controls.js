@@ -108,8 +108,12 @@ class BaseInfoControl {
     }
 
     getFeatureName(feature, state=null) {
+        return this.getFeaturePropertyValue(feature, 'name', state);
+    }
+
+    getFeaturePropertyValue(feature, name, state=null) {
         state = state || this.drawControl.get(feature.id).properties;
-        return state ? state.name : null;
+        return state ? state[name] : null;
     }
 
     getFeaturesTitle(features, state=null) {
@@ -269,10 +273,12 @@ class BaseEditableInfoControl extends BaseInfoControl {
         } else {
             this.hideToolbar();
         }
-        const nameValue = features.length === 1 ? this.getFeatureName(features[0], state) || '' : '';
-        const namePropertyInput = this._editContainer.querySelector('input[name=name]');
-        if (namePropertyInput) {
-            namePropertyInput.value = nameValue;
+        for (const editProperty of this.editProperties) {
+            const inputEl = this._editContainer.querySelector(`.edit-form input[name="${editProperty.name}"]`);
+            const propertyValue = features.length === 1 ? this.getFeaturePropertyValue(features[0], editProperty.name, state) || '' : '';
+            if (inputEl) {
+                inputEl.value = propertyValue;
+            }
         }
     }
 
