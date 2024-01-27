@@ -23,7 +23,6 @@ module.exports = {
         ],
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin(),
         new HtmlWebpackPlugin({
             // inject: false,
@@ -45,5 +44,6 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         library: 'mapboxglFeatureInfo',
         libraryTarget: 'global',
+        clean: true
     },
 };
