@@ -1,5 +1,5 @@
 import mapboxgl from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
+import MapboxDraw from '@mapbox/mapbox-gl-draw-dist';
 import { LineStringInfoControl, MultiLineInfoControl, PointInfoControl, DrawNamedLineMode } from '../src';
 
 import 'mapbox-gl/dist/mapbox-gl.css';

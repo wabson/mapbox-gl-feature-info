@@ -1,5 +1,4 @@
-import * as DrawConstants from '@mapbox/mapbox-gl-draw/src/constants';
-import * as CommonSelectors from '@mapbox/mapbox-gl-draw/src/lib/common_selectors';
+import MapboxDraw from '@mapbox/mapbox-gl-draw-dist';
 import length from '@turf/length';
 import midpoint from '@turf/midpoint';
 import { lineString } from '@turf/helpers';
@@ -57,17 +56,17 @@ class BaseInfoControl {
         this.onDrawSelectionChangeListener = this.onDrawSelectionChange.bind(this);
         this.onDrawDeleteListener = this.onDrawDelete.bind(this);
 
-        this._map.on(DrawConstants.events.CREATE, this.onDrawCreateListener);
-        this._map.on(DrawConstants.events.UPDATE, this.onDrawUpdateListener);
-        this._map.on(DrawConstants.events.SELECTION_CHANGE, this.onDrawSelectionChangeListener);
-        this._map.on(DrawConstants.events.DELETE, this.onDrawDeleteListener);
+        this._map.on(MapboxDraw.constants.events.CREATE, this.onDrawCreateListener);
+        this._map.on(MapboxDraw.constants.events.UPDATE, this.onDrawUpdateListener);
+        this._map.on(MapboxDraw.constants.events.SELECTION_CHANGE, this.onDrawSelectionChangeListener);
+        this._map.on(MapboxDraw.constants.events.DELETE, this.onDrawDeleteListener);
     }
 
     unregisterListeners() {
-        this._map.off(DrawConstants.events.CREATE, this.onDrawCreateListener);
-        this._map.off(DrawConstants.events.UPDATE, this.onDrawUpdateListener);
-        this._map.off(DrawConstants.events.SELECTION_CHANGE, this.onDrawSelectionChangeListener);
-        this._map.off(DrawConstants.events.DELETE, this.onDrawDeleteListener);
+        this._map.off(MapboxDraw.constants.events.CREATE, this.onDrawCreateListener);
+        this._map.off(MapboxDraw.constants.events.UPDATE, this.onDrawUpdateListener);
+        this._map.off(MapboxDraw.constants.events.SELECTION_CHANGE, this.onDrawSelectionChangeListener);
+        this._map.off(MapboxDraw.constants.events.DELETE, this.onDrawDeleteListener);
     }
 
     onDrawCreate(e) {
@@ -78,7 +77,7 @@ class BaseInfoControl {
     }
 
     onDrawUpdate(e) {
-        if (this.isSupportedFeatures(e.features) && e.action === DrawConstants.updateActions.CHANGE_COORDINATES) {
+        if (this.isSupportedFeatures(e.features) && e.action === MapboxDraw.constants.updateActions.CHANGE_COORDINATES) {
             this.clearFeatures();
             this.setFeatures(e.features);
         }
@@ -116,8 +115,8 @@ class BaseInfoControl {
     getFeaturesTitle(features, state=null) {
         let lineDistance = 0, title = '';
         if (features.length > 0 && features.every(
-            (feature) => feature.type === DrawConstants.geojsonTypes.LINE_STRING ||
-            feature.type === DrawConstants.geojsonTypes.FEATURE && feature.geometry.type === DrawConstants.geojsonTypes.LINE_STRING
+            (feature) => feature.type === MapboxDraw.constants.geojsonTypes.LINE_STRING ||
+            feature.type === MapboxDraw.constants.geojsonTypes.FEATURE && feature.geometry.type === MapboxDraw.constants.geojsonTypes.LINE_STRING
             ) && this.distanceUnits !== DISTANCE_UNITS_NONE) {
             lineDistance = features.reduce((accumulated, feature) => accumulated + length(feature, {units: this.distanceUnits}), 0);
         }
@@ -222,7 +221,7 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     isEditingSupported() {
         const mode = this.drawControl.getMode();
-        return mode === DrawConstants.modes.SIMPLE_SELECT || mode === DrawConstants.modes.DIRECT_SELECT;
+        return mode === MapboxDraw.constants.modes.SIMPLE_SELECT || mode === MapboxDraw.constants.modes.DIRECT_SELECT;
     }
 
     stopEditing() {
@@ -237,14 +236,18 @@ class BaseEditableInfoControl extends BaseInfoControl {
                 this.drawControl.setFeatureProperty(feature.id, inputEl.name, inputEl.value);
             }
         }
+        // this.map.fire(Constants.events.DRAW_MOUSE_MOVE, {
+        //     feature: state.line,
+        //     state: state
+        // });
         this.setFeaturesText(selectedFeatures);
     }
 
     onEditFormInputKeyup(e) {
-        if (CommonSelectors.isEnterKey(e)) {
+        if (MapboxDraw.lib.CommonSelectors.isEnterKey(e)) {
             this.saveEditForm();
             this.stopEditing();
-        } else if (CommonSelectors.isEscapeKey(e)) {
+        } else if (MapboxDraw.lib.CommonSelectors.isEscapeKey(e)) {
             this.hideEditForm();
         }
     }
@@ -317,13 +320,13 @@ class LineStringInfoControl extends BaseEditableInfoControl {
     onClickAddLinePoint(e) {
         e.preventDefault();
         const selected = this.drawControl.getSelected(), mode = this.drawControl.getMode();
-        if (selected.features.length !== 1 || selected.features[0].geometry.type !== DrawConstants.geojsonTypes.LINE_STRING) {
+        if (selected.features.length !== 1 || selected.features[0].geometry.type !== MapboxDraw.constants.geojsonTypes.LINE_STRING) {
             return;
         }
         const selectedLine = selected.features[0];
-        if (mode === DrawConstants.modes.SIMPLE_SELECT) {
+        if (mode === MapboxDraw.constants.modes.SIMPLE_SELECT) {
             this.extendLineString(selectedLine);
-        } else if (mode === DrawConstants.modes.DIRECT_SELECT) {
+        } else if (mode === MapboxDraw.constants.modes.DIRECT_SELECT) {
             const selectedPoints = this.drawControl.getSelectedPoints();
             if (selectedPoints.features.length === 1) {
                 const selectedPoint = selectedPoints.features[0];
@@ -344,7 +347,7 @@ class LineStringInfoControl extends BaseEditableInfoControl {
         delete newLine.id;
         const newFeatureIds = this.drawControl.add(newLine);
         this.drawControl.changeMode(
-            DrawConstants.modes.SIMPLE_SELECT,
+            MapboxDraw.constants.modes.SIMPLE_SELECT,
             { featureIds: newFeatureIds }
         );
         this.setFeatures(this.drawControl.getSelected().features);
@@ -353,7 +356,7 @@ class LineStringInfoControl extends BaseEditableInfoControl {
     onClickSplitLine(e) {
         e.preventDefault();
         const selected = this.drawControl.getSelected(), mode = this.drawControl.getMode();
-        if (mode === DrawConstants.modes.DIRECT_SELECT) {
+        if (mode === MapboxDraw.constants.modes.DIRECT_SELECT) {
             const selectedPoints = this.drawControl.getSelectedPoints();
             if (selectedPoints.features.length === 1) {
                 this.splitLine(selected.features[0], selectedPoints.features[0]);
@@ -363,10 +366,10 @@ class LineStringInfoControl extends BaseEditableInfoControl {
 
     extendLineString(fromFeature) {
         this.drawControl.changeMode(
-            DrawConstants.modes.DRAW_LINE_STRING, {
+            MapboxDraw.constants.modes.DRAW_LINE_STRING, {
             featureId: fromFeature.id,
             from: {
-                type: DrawConstants.geojsonTypes.POINT,
+                type: MapboxDraw.constants.geojsonTypes.POINT,
                 coordinates: fromFeature.geometry.coordinates[fromFeature.geometry.coordinates.length - 1]
             },
             showNamePrompt: false,
@@ -396,9 +399,9 @@ class LineStringInfoControl extends BaseEditableInfoControl {
         if (0 < pointIndex && pointIndex < selectedLine.geometry.coordinates.length - 2) {
             const splitPoint = pointIndex + 1;
             const newLine = {
-                type: DrawConstants.geojsonTypes.FEATURE,
+                type: MapboxDraw.constants.geojsonTypes.FEATURE,
                 geometry: {
-                    type: DrawConstants.geojsonTypes.LINE_STRING,
+                    type: MapboxDraw.constants.geojsonTypes.LINE_STRING,
                     coordinates: selectedLine.geometry.coordinates.slice(splitPoint)
                 },
                 properties: {}
@@ -411,14 +414,14 @@ class LineStringInfoControl extends BaseEditableInfoControl {
     }
 
     isSupportedFeatures(features) {
-        return features.length == 1 && features[0].geometry.type === DrawConstants.geojsonTypes.LINE_STRING;
+        return features.length == 1 && features[0].geometry.type === MapboxDraw.constants.geojsonTypes.LINE_STRING;
     }
 }
 
 class PointInfoControl extends BaseEditableInfoControl {
 
     isSupportedFeatures(features) {
-        return features.length == 1 && features[0].geometry.type === DrawConstants.geojsonTypes.POINT;
+        return features.length == 1 && features[0].geometry.type === MapboxDraw.constants.geojsonTypes.POINT;
     }
 
     getDefaultTitle() {
@@ -457,13 +460,13 @@ class MultiLineInfoControl extends BaseEditableInfoControl {
         startingFeature.geometry.coordinates = startingFeature.geometry.coordinates.concat(removeFeature.geometry.coordinates);
         this.drawControl.delete([removeFeature.id]).add(startingFeature);
         // work around delete() and add() not firing selection change event
-        this._map.fire(DrawConstants.events.SELECTION_CHANGE, {
+        this._map.fire(MapboxDraw.constants.events.SELECTION_CHANGE, {
             features: [startingFeature]
         });
     }
 
     isSupportedFeatures(features) {
-        return features.length == 2 && features.every((feature) => feature.geometry.type === DrawConstants.geojsonTypes.LINE_STRING);
+        return features.length == 2 && features.every((feature) => feature.geometry.type === MapboxDraw.constants.geojsonTypes.LINE_STRING);
     }
 
     getDefaultTitle() {

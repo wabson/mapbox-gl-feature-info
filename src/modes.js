@@ -1,12 +1,12 @@
-import * as DrawConstants from '@mapbox/mapbox-gl-draw/src/constants';
-import DrawLineString from '@mapbox/mapbox-gl-draw/src/modes/draw_line_string';
-import * as CommonSelectors from '@mapbox/mapbox-gl-draw/src/lib/common_selectors';
+import MapboxDraw from '@mapbox/mapbox-gl-draw-dist';
 
 import Constants from './constants';
 import './common.css';
 import './modes.css';
 
 const DrawNamedLineMode = {};
+
+const DrawLineString = MapboxDraw.modes.draw_line_string;
 
 Object.assign(DrawNamedLineMode, DrawLineString, {
 
@@ -24,7 +24,7 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
         });
         if (showNamePrompt) {
             this.setupNameFormControl(extendedState);
-            this.updateUIClasses({ mouse: DrawConstants.cursors.MOVE });
+            this.updateUIClasses({ mouse: MapboxDraw.constants.cursors.MOVE });
             this._ctx.ui.updateMapClasses();
         }
         return extendedState;
@@ -47,7 +47,7 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
     },
     clickAnywhere: function(state, e) {
         if (state.isNameRequired === true && !state.name) {
-            return this.changeMode(DrawConstants.modes.SIMPLE_SELECT);
+            return this.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
         } else {
             this.removeNameFormControl();
             return DrawLineString.clickAnywhere.call(this, state, e);
@@ -79,7 +79,7 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
         }
     },
     startDraw: function() {
-        this.updateUIClasses({ mouse: DrawConstants.cursors.ADD });
+        this.updateUIClasses({ mouse: MapboxDraw.constants.cursors.ADD });
         DrawLineString.onSetup.call(this, {});
         this._ctx.ui.updateMapClasses();
         this.removeNameFormControl();
@@ -94,11 +94,11 @@ Object.assign(DrawNamedLineMode, DrawLineString, {
         }
     },
     onNameInputKeyUp: function(state, e) {
-        if (CommonSelectors.isEnterKey(e)) {
+        if (MapboxDraw.lib.CommonSelectors.isEnterKey(e)) {
             const name = this._inputEl.value;
             state.name = name;
             this.startDraw();
-        } else if (CommonSelectors.isEscapeKey(e)) {
+        } else if (MapboxDraw.lib.CommonSelectors.isEscapeKey(e)) {
             this.removeNameFormControl();
         }
     }
