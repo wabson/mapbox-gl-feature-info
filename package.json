@@ -2,41 +2,51 @@
   "name": "@wabson/mapbox-gl-feature-info",
   "version": "0.0.8",
   "description": "Mapbox GL JS custom controls to display and allow editing of information about selected features in Mapbox Draw",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "index.d.ts",
+  "files": [
+    "lib/",
+    "index.d.ts"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "eslint src demo && webpack --watch",
-    "build": "eslint src demo && webpack",
+    "watch-lib": "eslint src && webpack --config webpack.lib.config.js --watch",
+    "build-demo": "eslint src demo && webpack",
+    "build-lib": "eslint src && webpack --config webpack.lib.config.js",
+    "build": "npm run build-demo && npm run build-lib",
     "build-docs": "cp dist/* docs/",
-    "start": "eslint src demo && webpack-dev-server --open",
-    "prepublish": "npm run build"
+    "start": "eslint src demo && webpack serve --open",
+    "prepare": "npm run build-lib"
   },
   "author": "Will Abson",
   "license": "ISC",
   "dependencies": {
-    "@mapbox/mapbox-gl-draw": "^1.4.0",
-    "@turf/helpers": "^6.5.0",
-    "@turf/length": "^6.5.0",
-    "@turf/midpoint": "^6.5.0",
-    "mapbox-gl": "^3.1.2"
+    "@mapbox/mapbox-gl-draw": "^1.5.1",
+    "@turf/helpers": "^7.3.4",
+    "@turf/length": "^7.3.4",
+    "@turf/midpoint": "^7.3.4",
+    "mapbox-gl": "^3.21.0"
   },
   "devDependencies": {
-    "@types/mapbox-gl": "^2.7.19",
-    "@webpack-cli/serve": "^2.0.5",
-    "css-loader": "^6.7.3",
-    "eslint": "^8.56.0",
+    "@types/mapbox-gl": "^3.5.0",
+    "@types/mapbox__mapbox-gl-draw": "^1.4.9",
+    "@webpack-cli/serve": "^3.0.1",
+    "css-loader": "^7.1.4",
+    "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-promise": "^6.6.0",
     "eslint-plugin-standard": "^5.0.0",
     "file-loader": "^6.2.0",
-    "html-loader": "^5.0.0",
-    "html-webpack-plugin": "^5.6.0",
-    "mini-css-extract-plugin": "^2.7.2",
-    "style-loader": "^3.3.1",
-    "webpack": "^5.90.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.6",
+    "mini-css-extract-plugin": "^2.10.2",
+    "style-loader": "^4.0.0",
+    "typescript": "^5.8.3",
+    "webpack": "^5.106.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.3"
   }
 }

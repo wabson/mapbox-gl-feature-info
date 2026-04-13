@@ -23,11 +23,13 @@ Include the library in your project
 
 Using `<script>` tags
 
-    <script src="node_modules/@wabson/mapbox-gl-feature-info/dist/lib.bundle.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="node_modules/@wabson/mapbox-gl-feature-info/lib/index.css">
+    <script src="node_modules/@wabson/mapbox-gl-feature-info/lib/index.js" type="application/javascript"></script>
 
-Or ES6 import
+Or ES6 import (TypeScript types are included)
 
     import { LineStringInfoControl, PointInfoControl, MultiLineInfoControl, DrawNamedLineMode } from '@wabson/mapbox-gl-feature-info';
+    import '@wabson/mapbox-gl-feature-info/lib/index.css';
 
 Add a basic LineString distance indicator to your map
 
@@ -129,3 +131,28 @@ To set this up, set either of the following properties on the imported
 or
 
     DrawNamedLineMode.showNamePrompt = true;
+
+## Development
+
+Node.js 18 or later is required. The repo includes an `.nvmrc` file, so if you
+use [nvm](https://github.com/nvm-sh/nvm) you can switch to the right version with:
+
+    nvm use
+
+Install dependencies:
+
+    npm install
+
+| Script | Description |
+|---|---|
+| `npm start` | Start the webpack dev server and open the demo in a browser |
+| `npm run build` | Lint, then build both the demo and the library |
+| `npm run build-lib` | Lint and build the library only (outputs to `lib/`) |
+| `npm run build-demo` | Lint and build the demo only (outputs to `dist/`) |
+| `npm run watch` | Watch mode for the demo build |
+| `npm run watch-lib` | Watch mode for the library build |
+| `npm run build-docs` | Copy the demo build to `docs/` for GitHub Pages |
+
+The library is compiled to `lib/index.js` and `lib/index.css`. These files
+and `index.d.ts` are the only things published to npm (controlled by the
+`files` field in `package.json`).
