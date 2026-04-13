@@ -117,6 +117,54 @@ The `defaultTitle` property allows customising the placeholder that will be used
 the selected feature has no name, the default is based on the type of feature, e.g.
 LineStrings will show as 'Line'.
 
+### Classifying features with a type dropdown
+
+You can provide a list of named types for lines or points. When set, a dropdown
+appears in the control panel whenever a feature of that type is selected. The
+user's choice is saved immediately to the feature's GeoJSON properties.
+
+Pass a `featureTypes` array to the control constructor. Each entry needs a
+`name` (shown in the dropdown) and a `value` (stored in the GeoJSON):
+
+````
+map.addControl(new LineStringInfoControl({
+    drawControl: draw,
+    featureTypes: [
+        { name: 'Footpath', value: 'footpath' },
+        { name: 'Cycle route', value: 'cycle_route' },
+        { name: 'Road', value: 'road' }
+    ]
+}));
+````
+
+The selected value is stored under the property key `featureType` by default.
+To use a different key, pass `featureTypeProperty`:
+
+````
+map.addControl(new PointInfoControl({
+    drawControl: draw,
+    featureTypes: [
+        { name: 'Bus stop', value: 'bus_stop' },
+        { name: 'Train station', value: 'train_station' }
+    ],
+    featureTypeProperty: 'poi_type'
+}));
+````
+
+The resulting GeoJSON will include the chosen value in `feature.properties`:
+
+```json
+{
+  "type": "Feature",
+  "geometry": { "type": "LineString", "coordinates": [...] },
+  "properties": {
+    "featureType": "cycle_route"
+  }
+}
+```
+
+If `featureTypes` is omitted or an empty array, no dropdown is shown.
+
 ### Prompting for a name before drawing
 
 In some circumstances you may want to make it a requirement for the user to enter

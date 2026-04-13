@@ -22,6 +22,13 @@ export interface EditProperty {
     label: string;
 }
 
+export interface FeatureType {
+    /** Display name shown in the dropdown. */
+    name: string;
+    /** Value stored in the GeoJSON feature properties. */
+    value: string;
+}
+
 export type DistanceUnits = 'miles' | 'kilometers' | 'none';
 
 export interface BaseInfoControlOptions {
@@ -32,6 +39,18 @@ export interface BaseInfoControlOptions {
 export interface EditableInfoControlOptions extends BaseInfoControlOptions {
     drawControl: DrawControl;
     editProperties?: EditProperty[];
+    /**
+     * List of feature types to show in a type dropdown.
+     * When provided, a select element is displayed and the chosen value is
+     * saved automatically to the feature's GeoJSON properties.
+     * If omitted or empty, no dropdown is shown.
+     */
+    featureTypes?: FeatureType[];
+    /**
+     * GeoJSON property name used to store the selected type.
+     * Defaults to `'featureType'`.
+     */
+    featureTypeProperty?: string;
 }
 
 export declare class LineStringInfoControl implements IControl {

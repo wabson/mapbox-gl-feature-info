@@ -159,6 +159,8 @@ class BaseEditableInfoControl extends BaseInfoControl {
         super(options);
         this.drawControl = options && options.drawControl;
         this.editProperties = options.editProperties || [];
+        this.featureTypes = options.featureTypes || [];
+        this.featureTypeProperty = options.featureTypeProperty || 'featureType';
         this.editActions = this.editProperties.length ? [{
             className: 'edit-info',
             title: 'Edit feature information',
@@ -168,6 +170,16 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     onAdd(map) {
         const container = super.onAdd(map);
+
+        if (this.featureTypes.length) {
+            this._typeSelectContainer = document.createElement('div');
+            this._typeSelectContainer.className = 'feature-type-select';
+            this._typeSelectContainer.innerHTML = '<label>Type: <select name="' + this.featureTypeProperty + '">' +
+                this.featureTypes.map((t) => `<option value="${t.value}">${t.name}</option>`).join('') +
+                '</select></label>';
+            this._container.appendChild(this._typeSelectContainer);
+            this._typeSelectContainer.querySelector('select').addEventListener('change', () => this.saveTypeSelection());
+        }
 
         this._editContainer = document.createElement('div');
         this._editContainer.className = 'edit-ctrl';
@@ -180,6 +192,15 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
         this.registerDomEvents();
         return container;
+    }
+
+    saveTypeSelection() {
+        if (!this._typeSelectContainer) return;
+        const selectEl = this._typeSelectContainer.querySelector('select');
+        const selectedFeatures = this.drawControl.getSelected().features;
+        for (const feature of selectedFeatures) {
+            this.drawControl.setFeatureProperty(feature.id, this.featureTypeProperty, selectEl.value);
+        }
     }
 
     editToolbarHtml() {
@@ -279,6 +300,13 @@ class BaseEditableInfoControl extends BaseInfoControl {
             if (inputEl) {
                 inputEl.value = propertyValue;
             }
+        }
+        if (this.featureTypes.length && this._typeSelectContainer) {
+            const selectEl = this._typeSelectContainer.querySelector('select');
+            const storedValue = features.length === 1
+                ? this.getFeaturePropertyValue(features[0], this.featureTypeProperty, state) || ''
+                : '';
+            selectEl.value = storedValue || this.featureTypes[0].value;
         }
     }
 
