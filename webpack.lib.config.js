@@ -34,9 +34,6 @@ module.exports = {
     resolve: {
         fallback: {
             fs: false
-        },
-        alias: {
-            '@mapbox/mapbox-gl-draw-dist': path.resolve(__dirname, 'node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js'),
         }
     },
     output: {

@@ -1,4 +1,4 @@
-import MapboxDraw from '@mapbox/mapbox-gl-draw-dist';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 import Constants from './constants';
 import './common.css';

@@ -1,4 +1,4 @@
-import MapboxDraw from '@mapbox/mapbox-gl-draw-dist';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import length from '@turf/length';
 import midpoint from '@turf/midpoint';
 import { lineString } from '@turf/helpers';
