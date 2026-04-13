@@ -21,6 +21,9 @@
   },
   "author": "Will Abson",
   "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@turf/helpers": "^7.3.4",
