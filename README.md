@@ -119,11 +119,12 @@ LineStrings will show as 'Line'.
 
 ### Classifying features with a type dropdown
 
-You can provide a list of named types for lines or points. When set, a dropdown
-appears in the control panel whenever a feature of that type is selected. The
-user's choice is saved immediately to the feature's GeoJSON properties.
+Each control accepts its own independent `featureTypes` list, so lines and
+points can have completely different sets of types. When set, a dropdown appears
+in the control panel whenever a feature of that type is selected, and the user's
+choice is saved immediately to the feature's GeoJSON properties.
 
-Pass a `featureTypes` array to the control constructor. Each entry needs a
+Pass a `featureTypes` array to each control constructor. Each entry needs a
 `name` (shown in the dropdown) and a `value` (stored in the GeoJSON):
 
 ````
@@ -135,6 +136,15 @@ map.addControl(new LineStringInfoControl({
         { name: 'Road', value: 'road' }
     ]
 }));
+
+map.addControl(new PointInfoControl({
+    drawControl: draw,
+    featureTypes: [
+        { name: 'Bus stop', value: 'bus_stop' },
+        { name: 'Train station', value: 'train_station' },
+        { name: 'Car park', value: 'car_park' }
+    ]
+}));
 ````
 
 The selected value is stored under the property key `featureType` by default.
@@ -143,10 +153,7 @@ To use a different key, pass `featureTypeProperty`:
 ````
 map.addControl(new PointInfoControl({
     drawControl: draw,
-    featureTypes: [
-        { name: 'Bus stop', value: 'bus_stop' },
-        { name: 'Train station', value: 'train_station' }
-    ],
+    featureTypes: [...],
     featureTypeProperty: 'poi_type'
 }));
 ````
