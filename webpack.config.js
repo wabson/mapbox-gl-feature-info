@@ -29,6 +29,12 @@ module.exports = {
             // bodyHtmlSnippet: '<div id="map"></div>',
         })
     ],
+    ignoreWarnings: [
+        {
+            module: /mapbox-gl/,
+            message: /Critical dependency: the request of a dependency is an expression/
+        }
+    ],
     resolve: {
         fallback: {
             fs: false
