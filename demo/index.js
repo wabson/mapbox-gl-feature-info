@@ -11,7 +11,7 @@ const mapEl = document.createElement('div');
 mapEl.setAttribute('id', 'map');
 document.body.appendChild(mapEl);
 
-mapboxgl.accessToken = 'pk.eyJ1Ijoid2Fic29uIiwiYSI6ImNrNzBmbzkzbDA4ZWMzbG16M3gxMGF5dnoifQ.x_rIQz0D0enm_E5IIRhJPQ';
+mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
 
 var map = new mapboxgl.Map({
     container: 'map',

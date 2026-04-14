@@ -36,6 +36,7 @@
     "@types/mapbox__mapbox-gl-draw": "^1.4.9",
     "@webpack-cli/serve": "^3.0.1",
     "css-loader": "^7.1.4",
+    "dotenv-webpack": "^9.0.0",
     "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.32.0",
