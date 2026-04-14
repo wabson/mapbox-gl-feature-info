@@ -2,10 +2,10 @@
   "name": "@wabson/mapbox-gl-feature-info",
   "version": "0.0.10",
   "description": "Mapbox GL JS custom controls to display and allow editing of information about selected features in Mapbox Draw",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "types": "index.d.ts",
   "files": [
-    "lib/",
+    "dist/",
     "index.d.ts"
   ],
   "scripts": {
@@ -15,7 +15,7 @@
     "build-demo": "eslint src demo && webpack",
     "build-lib": "eslint src && webpack --config webpack.lib.config.js",
     "build": "npm run build-demo && npm run build-lib",
-    "build-docs": "cp dist/* docs/",
+    "build-docs": "cp public/* docs/",
     "start": "eslint src demo && webpack serve --open",
     "prepare": "npm run build-lib"
   },

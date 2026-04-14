@@ -1,5 +1,5 @@
 .DS_Store
 .nvmrc
 dist/
-lib/
+public/
 node_modules/
