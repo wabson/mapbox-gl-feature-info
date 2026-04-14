@@ -1,6 +1,6 @@
 {
   "name": "@wabson/mapbox-gl-feature-info",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Mapbox GL JS custom controls to display and allow editing of information about selected features in Mapbox Draw",
   "main": "dist/index.js",
   "types": "index.d.ts",
