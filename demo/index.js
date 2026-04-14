@@ -40,6 +40,11 @@ map.on('load', () => {
     map.addControl(new LineStringInfoControl({
         distanceUnits: 'kilometers',
         drawControl: draw,
+        featureTypes: [
+            { name: 'Footpath', value: 'footpath' },
+            { name: 'Cycle route', value: 'cycle_route' },
+            { name: 'Road', value: 'road' }
+        ],
         editProperties: [
             {
                 name: 'name',
@@ -54,6 +59,11 @@ map.on('load', () => {
     }));
     map.addControl(new PointInfoControl({
         drawControl: draw,
+        featureTypes: [
+            { name: 'Bus stop', value: 'bus_stop' },
+            { name: 'Train station', value: 'train_station' },
+            { name: 'Car park', value: 'car_park' }
+        ],
         editProperties: [
             {
                 name: 'name',
