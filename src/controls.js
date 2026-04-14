@@ -171,14 +171,17 @@ class BaseEditableInfoControl extends BaseInfoControl {
     onAdd(map) {
         const container = super.onAdd(map);
 
+        const formFieldRows = [];
+        for (const prop of this.editProperties) {
+            formFieldRows.push(`<label>${prop.label}</label><input name="${prop.name}">`);
+        }
         if (this.featureTypes.length) {
-            this._typeSelectContainer = document.createElement('div');
-            this._typeSelectContainer.className = 'feature-type-select';
-            this._typeSelectContainer.innerHTML = '<label>Type: <select name="' + this.featureTypeProperty + '">' +
+            formFieldRows.push(
+                '<label>Type</label>' +
+                '<select name="' + this.featureTypeProperty + '">' +
                 this.featureTypes.map((t) => `<option value="${t.value}">${t.name}</option>`).join('') +
-                '</select></label>';
-            this._container.appendChild(this._typeSelectContainer);
-            this._typeSelectContainer.querySelector('select').disabled = true;
+                '</select>'
+            );
         }
 
         this._editContainer = document.createElement('div');
@@ -186,8 +189,8 @@ class BaseEditableInfoControl extends BaseInfoControl {
         this._editContainer.innerHTML = '<div class="edit-tools">' +
             this.editToolbarHtml() + '</div>' +
             '<div class="edit-form">' +
-            this.editProperties.map((prop) => `<div><label>${prop.label}: <input name="${prop.name}"></label></div>`).join('') +
-            '<div><button type="button" data-btn-action="ok">OK</button><button type="button" data-btn-action="cancel">Cancel</button></div></div>';
+            (formFieldRows.length ? '<div class="form-fields">' + formFieldRows.join('') + '</div>' : '') +
+            '<div class="edit-form-buttons"><button type="button" data-btn-action="ok">OK</button><button type="button" data-btn-action="cancel">Cancel</button></div></div>';
         this._container.appendChild(this._editContainer);
 
         this.registerDomEvents();
@@ -218,9 +221,6 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     showEditForm() {
         this._editContainer.querySelector('.edit-form').style.display = 'block';
-        if (this._typeSelectContainer) {
-            this._typeSelectContainer.querySelector('select').disabled = false;
-        }
         const firstPropertyInput = this._editContainer.querySelector('input');
         if (firstPropertyInput) {
             firstPropertyInput.focus();
@@ -229,9 +229,6 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     hideEditForm() {
         this._editContainer.querySelector('.edit-form').style.display = 'none';
-        if (this._typeSelectContainer) {
-            this._typeSelectContainer.querySelector('select').disabled = true;
-        }
     }
 
     showToolbar() {
@@ -259,8 +256,8 @@ class BaseEditableInfoControl extends BaseInfoControl {
                 this.drawControl.setFeatureProperty(feature.id, inputEl.name, inputEl.value);
             }
         }
-        if (this._typeSelectContainer) {
-            const selectEl = this._typeSelectContainer.querySelector('select');
+        if (this.featureTypes.length) {
+            const selectEl = this._editContainer.querySelector('.edit-form select');
             for (const feature of selectedFeatures) {
                 this.drawControl.setFeatureProperty(feature.id, this.featureTypeProperty, selectEl.value);
             }
@@ -301,8 +298,8 @@ class BaseEditableInfoControl extends BaseInfoControl {
                 inputEl.value = propertyValue;
             }
         }
-        if (this.featureTypes.length && this._typeSelectContainer) {
-            const selectEl = this._typeSelectContainer.querySelector('select');
+        if (this.featureTypes.length) {
+            const selectEl = this._editContainer.querySelector('.edit-form select');
             const storedValue = features.length === 1
                 ? this.getFeaturePropertyValue(features[0], this.featureTypeProperty, state) || ''
                 : '';
