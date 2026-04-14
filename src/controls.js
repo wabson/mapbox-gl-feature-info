@@ -161,7 +161,7 @@ class BaseEditableInfoControl extends BaseInfoControl {
         this.editProperties = options.editProperties || [];
         this.featureTypes = options.featureTypes || [];
         this.featureTypeProperty = options.featureTypeProperty || 'featureType';
-        this.editActions = this.editProperties.length ? [{
+        this.editActions = (this.editProperties.length || this.featureTypes.length) ? [{
             className: 'edit-info',
             title: 'Edit feature information',
             handler: this.onClickEditInfo
@@ -178,7 +178,7 @@ class BaseEditableInfoControl extends BaseInfoControl {
                 this.featureTypes.map((t) => `<option value="${t.value}">${t.name}</option>`).join('') +
                 '</select></label>';
             this._container.appendChild(this._typeSelectContainer);
-            this._typeSelectContainer.querySelector('select').addEventListener('change', () => this.saveTypeSelection());
+            this._typeSelectContainer.querySelector('select').disabled = true;
         }
 
         this._editContainer = document.createElement('div');
@@ -194,14 +194,6 @@ class BaseEditableInfoControl extends BaseInfoControl {
         return container;
     }
 
-    saveTypeSelection() {
-        if (!this._typeSelectContainer) return;
-        const selectEl = this._typeSelectContainer.querySelector('select');
-        const selectedFeatures = this.drawControl.getSelected().features;
-        for (const feature of selectedFeatures) {
-            this.drawControl.setFeatureProperty(feature.id, this.featureTypeProperty, selectEl.value);
-        }
-    }
 
     editToolbarHtml() {
         return this.editActions.map((action) => `<a class="${action.className}" title="${action.title}"></a>`).join('');
@@ -226,6 +218,9 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     showEditForm() {
         this._editContainer.querySelector('.edit-form').style.display = 'block';
+        if (this._typeSelectContainer) {
+            this._typeSelectContainer.querySelector('select').disabled = false;
+        }
         const firstPropertyInput = this._editContainer.querySelector('input');
         if (firstPropertyInput) {
             firstPropertyInput.focus();
@@ -234,6 +229,9 @@ class BaseEditableInfoControl extends BaseInfoControl {
 
     hideEditForm() {
         this._editContainer.querySelector('.edit-form').style.display = 'none';
+        if (this._typeSelectContainer) {
+            this._typeSelectContainer.querySelector('select').disabled = true;
+        }
     }
 
     showToolbar() {
@@ -261,10 +259,12 @@ class BaseEditableInfoControl extends BaseInfoControl {
                 this.drawControl.setFeatureProperty(feature.id, inputEl.name, inputEl.value);
             }
         }
-        // this.map.fire(Constants.events.DRAW_MOUSE_MOVE, {
-        //     feature: state.line,
-        //     state: state
-        // });
+        if (this._typeSelectContainer) {
+            const selectEl = this._typeSelectContainer.querySelector('select');
+            for (const feature of selectedFeatures) {
+                this.drawControl.setFeatureProperty(feature.id, this.featureTypeProperty, selectEl.value);
+            }
+        }
         this.setFeaturesText(selectedFeatures);
     }
 
